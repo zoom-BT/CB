@@ -116,7 +116,6 @@ class TestTextChunker:
         assert len(chunks) > 0
         assert all("text" in chunk for chunk in chunks)
         assert all("token_count" in chunk for chunk in chunks)
-        assert all("tokens" in chunk for chunk in chunks)
         assert all(chunk["source"] == "test" for chunk in chunks)
 
     def test_chunk_documents(self):

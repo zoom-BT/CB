@@ -203,13 +203,13 @@ API_VERSION=1.0.0
 }
 ```
 
-## 🔧 Prochaines étapes
+## 🔧 Modules
 
-Ce module fait partie d'une architecture en 3 parties :
+Ce projet est composé de 3 modules :
 
-1. ✅ **Module de scraping** (actuel)
-2. ⏳ **Module d'indexation vectorielle** (à venir)
-3. ⏳ **Module d'interfaçage IA** (à venir)
+1. ✅ **Module 1 : Scraping** → [Documentation complète](README.md)
+2. ✅ **Module 2 : Indexation vectorielle (Pinecone)** → [MODULE2_README.md](MODULE2_README.md)
+3. ⏳ **Module 3 : Interface IA (Gemini + Chat'bruti)** (à venir)
 
 ## 🎭 Défi Chat'bruti
 

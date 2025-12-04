@@ -1,4 +1,4 @@
-"""API FastAPI pour le module de scraping NIRD"""
+"""API FastAPI pour le chatbot NIRD"""
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
@@ -8,6 +8,7 @@ import logging
 
 from app.config import settings
 from app.modules.scraper import WebScraper, TextChunker, JSONExporter
+from app.routes import vector_routes
 
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +20,9 @@ app = FastAPI(
     version=settings.API_VERSION,
     description=settings.API_DESCRIPTION,
 )
+
+# Inclure les routes vectorielles (Module 2)
+app.include_router(vector_routes.router)
 
 # Initialisation des modules
 scraper = WebScraper()
@@ -170,7 +174,7 @@ async def get_data_stats():
         # Calculer les statistiques
         total_chunks = len(chunks)
         total_tokens = sum(chunk.get("token_count", 0) for chunk in chunks)
-        total_chars = sum(chunk.get("length", 0) for chunk in chunks)
+        total_chars = sum(len(chunk.get("text", "")) for chunk in chunks)
 
         # Compter les sources uniques
         unique_sources = len(

@@ -89,9 +89,7 @@ class TextChunker:
             chunk_data = {
                 "chunk_id": i,
                 "text": chunk,
-                "length": len(chunk),
                 "token_count": self.count_tokens(chunk),
-                "tokens": self.tokenize(chunk),
                 **metadata,
             }
             result.append(chunk_data)
