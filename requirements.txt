@@ -20,3 +20,8 @@ httpx>=0.28.0
 
 # Utilities
 python-dotenv>=1.0.0
+
+# Vector database and embeddings (Module 2)
+pinecone-client>=5.0.0
+sentence-transformers>=3.3.0
+numpy>=1.24.0
