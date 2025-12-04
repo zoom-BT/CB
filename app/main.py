@@ -170,7 +170,7 @@ async def get_data_stats():
         # Calculer les statistiques
         total_chunks = len(chunks)
         total_tokens = sum(chunk.get("token_count", 0) for chunk in chunks)
-        total_chars = sum(chunk.get("length", 0) for chunk in chunks)
+        total_chars = sum(len(chunk.get("text", "")) for chunk in chunks)
 
         # Compter les sources uniques
         unique_sources = len(
