@@ -31,7 +31,26 @@ app/
 - Python 3.10+
 - pip
 
-### Étapes
+### 🪟 Utilisateurs Windows
+👉 **Consultez [README.WINDOWS.md](README.WINDOWS.md)** pour des instructions spécifiques Windows avec scripts automatiques !
+
+### Installation rapide (tous systèmes)
+
+#### Méthode 1 : Scripts automatiques (Recommandé)
+
+**Windows :**
+```cmd
+install.bat
+run.bat
+```
+
+**Linux / macOS :**
+```bash
+python install.py
+python run.py
+```
+
+#### Méthode 2 : Installation manuelle
 
 1. Cloner le dépôt :
 ```bash
@@ -46,15 +65,30 @@ pip install -r requirements.txt
 
 3. Créer un fichier `.env` (optionnel) :
 ```bash
+# Linux/macOS
 cp .env.example .env
+
+# Windows
+copy .env.example .env
 ```
 
 ## 📦 Utilisation
 
 ### Lancer l'API
 
+**Méthode simple (cross-platform) :**
+```bash
+python run.py
+```
+
+**Ou avec uvicorn directement :**
 ```bash
 python -m uvicorn app.main:app --reload
+```
+
+**Ou sur Windows :**
+```cmd
+run.bat
 ```
 
 L'API sera disponible sur `http://localhost:8000`
@@ -104,9 +138,14 @@ Récupère les statistiques sur les données scrapées
 
 ## 🧪 Tests
 
-Lancer tous les tests :
+**Windows :**
+```cmd
+test.bat
+```
+
+**Linux / macOS :**
 ```bash
-pytest
+python -m pytest tests/ -v
 ```
 
 Avec couverture :
