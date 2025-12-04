@@ -7,8 +7,9 @@
 ### Méthode 1 : Scripts automatiques (Recommandé)
 
 1. **Installer Python** (si ce n'est pas déjà fait)
-   - Télécharger Python 3.10+ depuis [python.org](https://www.python.org/downloads/)
+   - Télécharger Python 3.11, 3.12 ou 3.13 depuis [python.org](https://www.python.org/downloads/)
    - ⚠️ **Important** : Cocher "Add Python to PATH" lors de l'installation
+   - 💡 **Python 3.13** : Si vous rencontrez des erreurs, consultez [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
 2. **Installer les dépendances**
    ```cmd
@@ -99,6 +100,8 @@ Une fois l'API lancée, ouvrez votre navigateur :
 Vous pourrez tester tous les endpoints directement depuis le navigateur !
 
 ## 🐛 Résolution de problèmes (Windows)
+
+⚠️ **Pour Python 3.13 et problèmes de compilation :** Consultez le guide complet [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
 ### Erreur "python n'est pas reconnu"
 ```cmd

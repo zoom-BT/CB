@@ -2,6 +2,8 @@
 
 ## Pour les pressés (Nuit de l'Info) ⚡
 
+⚠️ **Python 3.13 ?** Si vous avez des erreurs d'installation, consultez [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+
 ### Windows 🪟
 
 1. **Double-cliquez sur** `install.bat`

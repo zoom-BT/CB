@@ -28,8 +28,10 @@ app/
 ## 🚀 Installation
 
 ### Prérequis
-- Python 3.10+
+- Python 3.11, 3.12 ou 3.13
 - pip
+
+⚠️ **Python 3.13 :** Le `requirements.txt` a été mis à jour pour Python 3.13. Si vous rencontrez des problèmes d'installation, consultez [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ### 🪟 Utilisateurs Windows
 👉 **Consultez [README.WINDOWS.md](README.WINDOWS.md)** pour des instructions spécifiques Windows avec scripts automatiques !
