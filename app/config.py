@@ -21,13 +21,16 @@ class Settings(BaseSettings):
     API_VERSION: str = "1.0.0"
     API_DESCRIPTION: str = "API pour le chatbot NIRD - Nuit de l'Info 2025"
 
-    # Vector indexing settings (Module 2)
-    PINECONE_API_KEY: Optional[str] = None
-    PINECONE_INDEX_NAME: str = "nird-chatbot"
-    PINECONE_ENVIRONMENT: str = "us-east-1"
-    EMBEDDING_MODEL: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-    EMBEDDING_DIMENSION: int = 384
-    SEARCH_TOP_K: int = 5
+    # Semantic search settings (Module 2)
+    HISTORY_FILE: str = "data/historique_recherches.json"
+    MIN_SIMILARITY_SCORE: float = 0.12
+    SEARCH_TOP_K: int = 1
+
+    # Chatbot settings (Module 3)
+    GROQ_API_KEY: Optional[str] = None
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    CHATBOT_TEMPERATURE: float = 1.5
+    CHATBOT_MAX_TOKENS: int = 200
 
     class Config:
         env_file = ".env"

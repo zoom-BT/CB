@@ -8,7 +8,7 @@ import logging
 
 from app.config import settings
 from app.modules.scraper import WebScraper, TextChunker, JSONExporter
-from app.routes import vector_routes
+from app.routes import semantic_routes, chatbot_routes
 
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
@@ -21,8 +21,11 @@ app = FastAPI(
     description=settings.API_DESCRIPTION,
 )
 
-# Inclure les routes vectorielles (Module 2)
-app.include_router(vector_routes.router)
+# Inclure les routes Module 2 (recherche sémantique)
+app.include_router(semantic_routes.router)
+
+# Inclure les routes Module 3 (chatbot Chat-Bruti)
+app.include_router(chatbot_routes.router)
 
 # Initialisation des modules
 scraper = WebScraper()
@@ -60,7 +63,17 @@ async def root():
     return {
         "message": "Bienvenue sur l'API NIRD Chatbot",
         "version": settings.API_VERSION,
-        "description": "Module de scraping pour la Nuit de l'Info 2025",
+        "description": "API complète pour la Nuit de l'Info 2025",
+        "modules": {
+            "module_1": "Scraping web et découpage en chunks",
+            "module_2": "Recherche sémantique (TF-IDF + similarité cosinus)",
+            "module_3": "Chatbot Chat-Bruti avec Groq API"
+        },
+        "endpoints": {
+            "scraping": "/scrape, /data, /data/stats",
+            "semantic": "/semantic/search, /semantic/stats, /semantic/history",
+            "chatbot": "/chatbot/ask, /chatbot/chat, /chatbot/"
+        }
     }
 
 
