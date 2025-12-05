@@ -21,19 +21,44 @@ app = FastAPI(
     description=settings.API_DESCRIPTION,
 )
 
+# Initialisation des modules (Module 1 uniquement au démarrage)
+scraper = None
+chunker = None
+exporter = None
+
+
+def get_scraper():
+    """Initialise le scraper à la demande"""
+    global scraper
+    if scraper is None:
+        scraper = WebScraper()
+    return scraper
+
+
+def get_chunker():
+    """Initialise le chunker à la demande"""
+    global chunker
+    if chunker is None:
+        chunker = TextChunker(
+            chunk_size=settings.CHUNK_SIZE,
+            chunk_overlap=settings.CHUNK_OVERLAP,
+        )
+    return chunker
+
+
+def get_exporter():
+    """Initialise l'exporter à la demande"""
+    global exporter
+    if exporter is None:
+        exporter = JSONExporter(output_dir=settings.OUTPUT_DIR)
+    return exporter
+
+
 # Inclure les routes Module 2 (recherche sémantique)
 app.include_router(semantic_routes.router)
 
 # Inclure les routes Module 3 (chatbot Chat-Bruti)
 app.include_router(chatbot_routes.router)
-
-# Initialisation des modules
-scraper = WebScraper()
-chunker = TextChunker(
-    chunk_size=settings.CHUNK_SIZE,
-    chunk_overlap=settings.CHUNK_OVERLAP,
-)
-exporter = JSONExporter(output_dir=settings.OUTPUT_DIR)
 
 
 # Modèles Pydantic
@@ -101,7 +126,7 @@ async def scrape_urls(request: ScrapeRequest):
         logger.info(f"Début du scraping de {len(urls)} URLs")
 
         # Scraper les URLs
-        documents = scraper.scrape_multiple_urls(urls)
+        documents = get_scraper().scrape_multiple_urls(urls)
 
         if not documents:
             raise HTTPException(
@@ -119,7 +144,7 @@ async def scrape_urls(request: ScrapeRequest):
                 chunk_overlap=request.chunk_overlap,
             )
         else:
-            custom_chunker = chunker
+            custom_chunker = get_chunker()
 
         # Découper en chunks
         chunks = custom_chunker.chunk_documents(documents)
@@ -128,7 +153,7 @@ async def scrape_urls(request: ScrapeRequest):
         total_tokens = sum(chunk.get("token_count", 0) for chunk in chunks)
 
         # Exporter en JSON
-        output_file = exporter.export(chunks, settings.OUTPUT_FILE)
+        output_file = get_exporter().export(chunks, settings.OUTPUT_FILE)
 
         logger.info(
             f"Scraping terminé: {len(documents)} docs, "
@@ -160,7 +185,7 @@ async def get_scraped_data():
         Données scrapées avec métadonnées
     """
     try:
-        data = exporter.load(settings.OUTPUT_FILE)
+        data = get_exporter().load(settings.OUTPUT_FILE)
         return JSONResponse(content=data)
     except FileNotFoundError:
         raise HTTPException(
@@ -181,7 +206,7 @@ async def get_data_stats():
         Statistiques sur les données
     """
     try:
-        data = exporter.load(settings.OUTPUT_FILE)
+        data = get_exporter().load(settings.OUTPUT_FILE)
         chunks = data.get("chunks", [])
 
         # Calculer les statistiques
