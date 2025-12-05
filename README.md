@@ -1,230 +1,262 @@
-# NIRD Chatbot API - Module de Scraping
+# 🤖 NIRD Chatbot API - Nuit de l'Info 2025
 
-> Projet pour la Nuit de l'Info 2025 - Défi NIRD + Chat'bruti
+API complète combinant les défis **NIRD** (Numérique Inclusif, Responsable et Durable) et **Chat'bruti** pour la Nuit de l'Info 2025.
 
-API FastAPI pour scraper, chunker et indexer des contenus web pour alimenter un chatbot sur le projet NIRD (Numérique Inclusif, Responsable et Durable).
+## 🎯 Concept
 
-## 🎯 Objectif
+Un chatbot humoristique qui sensibilise au numérique responsable de manière absurde et décalée :
+- **Module 1** : Scrape le site NIRD et découpe le contenu en chunks
+- **Module 2** : Recherche sémantique pour trouver le contexte pertinent
+- **Module 3** : Chatbot Chat-Bruti qui génère des réponses absurdes mais éducatives
 
-Ce module permet de :
-- Scraper des pages web (individuelles ou via sitemap)
-- Découper le contenu en chunks intelligents
-- Tokenizer le texte pour une utilisation avec des LLM
-- Exporter les données au format JSON pour l'indexation vectorielle
+## ⚡ Installation rapide (Windows)
 
-## 🏗️ Architecture
+### 1. Prérequis
+- Python 3.13+
+- Git
 
-```
-app/
-├── main.py                    # API FastAPI
-├── config.py                  # Configuration
-└── modules/
-    └── scraper/
-        ├── scraper.py         # Web scraping
-        ├── chunker.py         # Chunking et tokenization
-        └── exporter.py        # Export JSON
-```
+### 2. Installation
 
-## 🚀 Installation
-
-### Prérequis
-- Python 3.11, 3.12 ou 3.13
-- pip
-
-⚠️ **Python 3.13 :** Le `requirements.txt` a été mis à jour pour Python 3.13. Si vous rencontrez des problèmes d'installation, consultez [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
-
-### 🪟 Utilisateurs Windows
-👉 **Consultez [README.WINDOWS.md](README.WINDOWS.md)** pour des instructions spécifiques Windows avec scripts automatiques !
-
-### Installation rapide (tous systèmes)
-
-#### Méthode 1 : Scripts automatiques (Recommandé)
-
-**Windows :**
-```cmd
-install.bat
-run.bat
-```
-
-**Linux / macOS :**
-```bash
-python install.py
-python run.py
-```
-
-#### Méthode 2 : Installation manuelle
-
-1. Cloner le dépôt :
-```bash
-git clone <votre-repo>
+```powershell
+# Cloner le projet
+git clone https://github.com/zoom-BT/CB.git
 cd CB
+
+# Installer les dépendances
+py -m pip install -r requirements.txt
 ```
 
-2. Installer les dépendances :
+### 3. Configuration
+
+Créez un fichier `.env` avec votre clé Groq (gratuite) :
+
 ```bash
-pip install -r requirements.txt
+# Obtenez votre clé gratuite sur: https://console.groq.com/keys
+GROQ_API_KEY=votre-clé-groq-ici
+GROQ_MODEL=llama-3.3-70b-versatile
+CHATBOT_TEMPERATURE=1.5
+CHATBOT_MAX_TOKENS=200
 ```
 
-3. Créer un fichier `.env` (optionnel) :
+### 4. Lancer l'API
+
+```powershell
+py run.py
+```
+
+L'API sera accessible sur **http://localhost:8000**
+
+Documentation interactive : **http://localhost:8000/docs**
+
+## 📚 Utilisation
+
+### Workflow complet
+
+#### 1. Scraper les données NIRD (Module 1)
+
 ```bash
-# Linux/macOS
-cp .env.example .env
-
-# Windows
-copy .env.example .env
-```
-
-## 📦 Utilisation
-
-### Lancer l'API
-
-**Méthode simple (cross-platform) :**
-```bash
-python run.py
-```
-
-**Ou avec uvicorn directement :**
-```bash
-python -m uvicorn app.main:app --reload
-```
-
-**Ou sur Windows :**
-```cmd
-run.bat
-```
-
-L'API sera disponible sur `http://localhost:8000`
-
-Documentation interactive : `http://localhost:8000/docs`
-
-### Endpoints disponibles
-
-#### `GET /`
-Point d'entrée principal avec informations sur l'API
-
-#### `GET /health`
-Vérification de l'état de santé de l'API
-
-#### `POST /scrape`
-Lance un scraping d'URLs
-
-**Body :**
-```json
+POST /scrape
 {
-  "urls": [
-    "https://nird.forge.apps.education.fr/",
-    "https://example.com/page2"
-  ],
-  "chunk_size": 500,
-  "chunk_overlap": 50
+  "urls": ["https://nird.forge.apps.education.fr/"]
 }
 ```
 
-**Réponse :**
-```json
+**Note** : Les données sont déjà scrapées dans `data/scraped_data.json`, cette étape est optionnelle.
+
+#### 2. Rechercher un contexte pertinent (Module 2)
+
+```bash
+POST /semantic/search
 {
-  "success": true,
-  "message": "Scraping terminé avec succès",
-  "total_documents": 2,
-  "total_chunks": 15,
-  "total_tokens": 3500,
-  "output_file": "data/scraped_data.json"
+  "question": "C'est quoi Linux ?"
 }
 ```
 
-#### `GET /data`
-Récupère toutes les données scrapées
-
-#### `GET /data/stats`
-Récupère les statistiques sur les données scrapées
-
-## 🧪 Tests
-
-**Windows :**
-```cmd
-test.bat
+**Réponse** :
+```json
+{
+  "question": "C'est quoi Linux ?",
+  "contexte": "Linux est un système d'exploitation libre utilisé dans les écoles...",
+  "confiance": 0.856,
+  "chunk_id": 12,
+  "source_url": "https://nird.forge.apps.education.fr/linux/",
+  "source_title": "Linux dans l'éducation"
+}
 ```
 
-**Linux / macOS :**
+#### 3. Obtenir une réponse absurde de Chat-Bruti (Module 3)
+
 ```bash
-python -m pytest tests/ -v
+POST /chatbot/ask
+{
+  "question": "C'est quoi Linux ?",
+  "contexte": "Linux est un système d'exploitation libre..."
+}
 ```
 
-Avec couverture :
+**Réponse** :
+```json
+{
+  "response": "Waouh, Linux ? C'est comme un pingouin philosophe qui refuse de payer Windows ! Yeahh, l'écologie numérique à son paroxysme : un OS qui tourne sur une patate et qui juge ton empreinte carbone. Oups, j'en ai trop dit..."
+}
+```
+
+### Endpoint simplifié (Module 2 + 3 combinés)
+
 ```bash
-pytest --cov=app tests/
+POST /chatbot/chat
+{
+  "question": "Pourquoi le reconditionnement c'est bien ?"
+}
 ```
 
-Tests spécifiques :
+Cette route fait automatiquement la recherche sémantique puis génère la réponse.
+
+## 🛠️ Architecture technique
+
+### Module 1 - Scraping
+- **BeautifulSoup4** : Extraction du contenu web
+- **LangChain** : Découpage intelligent en chunks
+- **tiktoken** : Comptage des tokens (encodage cl100k_base)
+- Export JSON optimisé (~60% plus léger)
+
+### Module 2 - Recherche sémantique
+- **TF-IDF** + Similarité cosinus (pas de dépendances externes)
+- Stopwords français
+- Boost de mots-clés NIRD (linux, reconditionnement, libre, etc.)
+- Historique sauvegardé en JSON
+
+### Module 3 - Chatbot Chat-Bruti
+- **Groq API** : LLM gratuit (llama-3.3-70b-versatile)
+- Personnalité absurde et philosophique
+- Temperature élevée (1.5) pour plus de créativité
+- Détourne le contexte de manière humoristique
+
+## 📁 Structure du projet
+
+```
+CB/
+├── app/
+│   ├── modules/
+│   │   ├── scraper/          # Module 1
+│   │   │   ├── scraper.py
+│   │   │   ├── chunker.py
+│   │   │   └── exporter.py
+│   │   ├── semantic/         # Module 2
+│   │   │   ├── semantic_search.py
+│   │   │   └── history_manager.py
+│   │   └── chatbot/          # Module 3
+│   │       └── chatbruti.py
+│   ├── routes/
+│   │   ├── semantic_routes.py
+│   │   └── chatbot_routes.py
+│   ├── config.py
+│   └── main.py
+├── data/
+│   ├── scraped_data.json     # Données NIRD (déjà scrapées)
+│   └── historique_recherches.json
+├── requirements.txt
+├── run.py
+└── README.md
+```
+
+## 🚀 Endpoints disponibles
+
+### Module 1 - Scraping
+- `POST /scrape` - Scraper des URLs
+- `GET /data` - Récupérer les données scrapées
+- `GET /data/stats` - Statistiques des données
+
+### Module 2 - Recherche sémantique
+- `POST /semantic/search` - Rechercher le meilleur contexte
+- `GET /semantic/stats` - Statistiques du moteur de recherche
+- `GET /semantic/history` - Historique des recherches
+- `DELETE /semantic/history/clear` - Vider l'historique
+
+### Module 3 - Chatbot
+- `GET /chatbot/` - Informations sur Chat-Bruti
+- `POST /chatbot/ask` - Poser une question avec contexte
+- `POST /chatbot/chat` - Interface simplifiée (recherche + réponse)
+
+### Général
+- `GET /` - Page d'accueil avec la liste des modules
+- `GET /health` - Vérification de l'état de l'API
+- `GET /docs` - Documentation Swagger interactive
+
+## 🎭 Personnalité Chat-Bruti
+
+Chat-Bruti est un chatbot volontairement absurde qui :
+- Ne répond jamais directement aux questions
+- Fait des jeux de mots et des exagérations
+- Se prend pour un philosophe du dimanche
+- Utilise des interjections : "waouh", "yeahh", "oups"
+- S'appuie vaguement sur le contexte NIRD mais le détourne complètement
+
+## ⚙️ Configuration avancée
+
+Toutes les variables d'environnement disponibles dans `.env` :
+
 ```bash
-pytest tests/test_scraper.py -v
-pytest tests/test_api.py -v
-```
-
-## ⚙️ Configuration
-
-Variables d'environnement disponibles (dans `.env`) :
-
-```env
-# Chunking
+# Scraping
 CHUNK_SIZE=500
 CHUNK_OVERLAP=50
 MAX_TOKENS=8000
-
-# Output
 OUTPUT_DIR=data
 OUTPUT_FILE=scraped_data.json
 
-# API
-API_TITLE=NIRD Chatbot API
-API_VERSION=1.0.0
+# Recherche sémantique
+HISTORY_FILE=data/historique_recherches.json
+MIN_SIMILARITY_SCORE=0.12
+SEARCH_TOP_K=1
+
+# Chatbot Groq
+GROQ_API_KEY=your-key-here
+GROQ_MODEL=llama-3.3-70b-versatile
+CHATBOT_TEMPERATURE=1.5
+CHATBOT_MAX_TOKENS=200
 ```
 
-## 📊 Format de données exportées
+## 🧪 Tests
 
-```json
-{
-  "metadata": {
-    "export_date": "2025-12-04T12:00:00",
-    "total_chunks": 15,
-    "total_tokens": 3500
-  },
-  "chunks": [
-    {
-      "chunk_id": 0,
-      "text": "Le projet NIRD vise à promouvoir...",
-      "length": 485,
-      "token_count": 120,
-      "tokens": [1234, 5678, ...],
-      "source_url": "https://nird.forge.apps.education.fr/",
-      "source_title": "NIRD - Accueil"
-    }
-  ]
-}
+```powershell
+# Tester les imports
+py test_import.py
+
+# Lancer les tests unitaires
+pytest
 ```
 
-## 🔧 Modules
+## 📝 Branches
 
-Ce projet est composé de 3 modules :
+- `claude/nird-chatbot-final-01V964kxTWdi92DQMbdbXyQz` - **Version finale complète** (3 modules)
+- `claude/module1-stable-01V964kxTWdi92DQMbdbXyQz` - Version stable Module 1 uniquement
+- `claude/french-greeting-01V964kxTWdi92DQMbdbXyQz` - Branche de développement
 
-1. ✅ **Module 1 : Scraping** → [Documentation complète](README.md)
-2. ✅ **Module 2 : Indexation vectorielle (Pinecone)** → [MODULE2_README.md](MODULE2_README.md)
-3. ⏳ **Module 3 : Interface IA (Gemini + Chat'bruti)** (à venir)
+## 🎓 Valeurs NIRD
 
-## 🎭 Défi Chat'bruti
+Ce projet promeut :
+- **Inclusif** : Accès au numérique pour tous via des solutions libres
+- **Responsable** : Sensibilisation à l'impact écologique du numérique
+- **Durable** : Reconditionnement d'appareils, lutte contre l'obsolescence programmée
 
-Ce module servira de base de connaissances pour un chatbot absurde et décalé qui répondra aux questions sur NIRD de manière... créative !
+Outils mis en avant : Linux, PrimTux, Tchap, Forge, logiciels libres.
 
-## 👥 Équipe
+## 🏆 Nuit de l'Info 2025
 
-[Votre nom d'équipe] - Nuit de l'Info 2025
+Projet réalisé pour la Nuit de l'Info 2025, combinant :
+- Défi principal : **NIRD** (Numérique Inclusif, Responsable et Durable)
+- Défi annexe : **Chat'bruti** (chatbot humoristique)
 
-## 📝 Licence
+## 📄 Licence
 
-Projet sous licence libre (à préciser selon les règles de la Nuit de l'Info)
+Projet éducatif - Nuit de l'Info 2025
 
-## 🔗 Liens utiles
+## 🙏 Remerciements
 
-- [Site NIRD](https://nird.forge.apps.education.fr/)
-- [Défi Chat'bruti](https://www.nuitdelinfo.com/)
-- [Documentation FastAPI](https://fastapi.tiangolo.com/)
+- Site NIRD : https://nird.forge.apps.education.fr/
+- Groq : Pour l'API LLM gratuite
+- Équipe Nuit de l'Info 2025
+
+---
+
+**Fait avec ❤️ (et beaucoup de café) pour la Nuit de l'Info 2025** ☕🌙
